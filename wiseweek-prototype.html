@@ -38,7 +38,13 @@
   --font-display:'Fraunces',serif; --font-body:'Inter',sans-serif; --font-mono:'IBM Plex Mono',monospace;
 }
 [data-theme="dark"]{ --bg:var(--ink); --surface:var(--ink-raised); --surface-2:var(--ink-raised-2); --text:#EFEDE7; --text-dim:var(--graphite); --line:var(--line-dark);
-  --menu-bg:#232522; --menu-text:#F1EFEA; --menu-text-dim:#A9ADA3; }
+  /* Dropdowns stay light/off-white even in dark mode for consistent readability */
+  --menu-bg:#FAF9F5; --menu-text:#252522; --menu-text-dim:#6B6B63;
+  /* Task priority/energy colors go vivid "neon" in dark mode so they pop against the near-black surface */
+  --pri-must-bg:#FF7A6E; --pri-must-border:#E5493B;
+  --pri-should-bg:#FFD24D; --pri-should-border:#E6AD1A;
+  --pri-nice-bg:#5EF0A5; --pri-nice-border:#22C97E;
+}
 [data-theme="light"]{ --bg:var(--paper); --surface:var(--paper-raised); --surface-2:var(--paper-raised-2); --text:#232420; --text-dim:#6B6F76; --line:var(--line-light); }
 *{box-sizing:border-box; margin:0; padding:0;}
 body{background:var(--bg); color:var(--text); font-family:var(--font-body); transition:background .3s ease,color .3s ease; -webkit-font-smoothing:antialiased;}
@@ -630,7 +636,7 @@ button{font-family:var(--font-body); cursor:pointer;}
       <div class="reality-strip">
         <div>
           <div class="reality-strip-eyebrow">Reality check</div>
-          <span class="reality-badge busy reality-badge-live" id="realityBadgeDashboard">⚠ Busy Week — 34.5h / 42h available</span>
+          <span class="reality-badge busy reality-badge-live" id="realityBadgeDashboard">⚠ Busy Week — 34.5h / 42h</span>
         </div>
         <div class="reality-strip-priorities">
           <div class="reality-strip-eyebrow">This week's priorities</div>
@@ -697,8 +703,7 @@ button{font-family:var(--font-body); cursor:pointer;}
     <!-- WEEKLY PLANNER -->
     <div class="page" id="page-planner">
       <div style="display:flex; gap:16px; margin-bottom:18px; align-items:center; flex-wrap:wrap;">
-        <span class="reality-badge busy reality-badge-live" id="realityBadge">⚠ Busy Week — 34.5h / 42h available</span>
-        <span style="font-size:12.5px; color:var(--text-dim);">Reverse planning from: <strong style="color:var(--text);">Ship v2 launch</strong></span>
+        <span class="reality-badge busy reality-badge-live" id="realityBadge">⚠ Busy Week — 34.5h / 42h</span>
       </div>
       <div class="grid week-cols" id="weekPlannerGrid"></div>
 
@@ -746,7 +751,7 @@ button{font-family:var(--font-body); cursor:pointer;}
       <div class="card" style="margin-bottom:18px;" id="analyticsWeekOverviewCard">
         <div class="card-head"><h3>Week overview</h3><span class="tag">Reality check</span></div>
         <div style="display:flex; align-items:center; gap:18px; margin-bottom:14px; flex-wrap:wrap;">
-          <span class="reality-badge busy reality-badge-live" id="realityBadgeAnalytics">⚠ Busy Week — 34.5h / 42h available</span>
+          <span class="reality-badge busy reality-badge-live" id="realityBadgeAnalytics">⚠ Busy Week — 34.5h / 42h</span>
         </div>
         <div id="weekOverviewBars"></div>
       </div>
@@ -765,7 +770,7 @@ button{font-family:var(--font-body); cursor:pointer;}
           <div id="habitSummary"></div>
         </div>
         <div class="card" id="analyticsLeaksCard">
-          <div class="card-head"><h3>Time leaks</h3><span class="tag">6.2h lost</span></div>
+          <div class="card-head"><h3>Time leaks</h3><span class="tag" id="timeLeaksTotalTag">0h logged</span></div>
           <div id="timeLeaks"></div>
         </div>
       </div>
@@ -802,7 +807,7 @@ button{font-family:var(--font-body); cursor:pointer;}
           <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
         </div>
         <div class="cal-grid" id="calGrid"></div>
-        <p class="hint" style="margin-top:16px; text-align:center;">Tap any date to view that day — read-only. Only the current week has live planning data; other days show a read-only snapshot.</p>
+        
       </div>
     </div>
 
@@ -844,7 +849,7 @@ button{font-family:var(--font-body); cursor:pointer;}
         <div class="card">
           <div class="card-head"><h3>Streak</h3><span class="tag">encourage, not punish</span></div>
           <div class="streak-grid" id="streakGrid"></div>
-          <p style="font-size:12px; color:var(--text-dim); margin-top:10px;">18-day planning streak. Missing one day won't reset it.</p>
+          <p style="font-size:12px; color:var(--text-dim); margin-top:10px;">18-day planning streak.</p>
         </div>
         <div class="card">
           <div class="card-head"><h3>Weekly life score history</h3></div>
@@ -979,9 +984,9 @@ const weekRangeLabel=`${days[0]} ${monthNames[weekDates[0].getMonth()]} ${weekDa
 const pageMeta={
   dashboard:{title:'Dashboard', sub:weekRangeLabel, icon:'▦'},
   planner:{title:'Weekly Planner', sub:'Plan the week, not just the day', icon:'▤'},
-  analytics:{title:'Analytics', sub:'Patterns across the last 12 weeks', icon:'▥'},
+  analytics:{title:'Analytics', sub:'', icon:'▥'},
   reflection:{title:'Reflection', sub:'What this week taught you', icon:'✦'},
-  calendar:{title:'Calendar', sub:'Browse any day since you started — read-only', icon:'▧'},
+  calendar:{title:'Calendar', sub:'Browse any day since you started', icon:'▧'},
   settings:{title:'Settings', sub:'Energy windows & preferences', icon:'⚙'},
   profile:{title:'Profile', sub:'Sam Kapoor', icon:'◉'},
   help:{title:'Help', sub:'Guides and support', icon:'?'},
@@ -1119,7 +1124,7 @@ function viewCalendarDate(dateObj){
   const dateLabel=`${dayNames[(dateObj.getDay()+6)%7]}, ${monthNames[dateObj.getMonth()]} ${dateObj.getDate()}, ${dateObj.getFullYear()}`;
 
   document.getElementById('dayTasksTitle').textContent=dateLabel;
-  document.getElementById('dayTasksTag').textContent='Read-only · outside tracked week';
+  document.getElementById('dayTasksTag').textContent='Outside tracked week';
   document.getElementById('dayTasksList').innerHTML='<div class="day-tasks-empty">No task data recorded for this day in the prototype — only the current week is tracked live.</div>';
   const apBtn=document.getElementById('antiProcBtn');
   if(apBtn) apBtn.style.display='none';
@@ -1313,6 +1318,11 @@ function renderTimeLeaks(){
   }
   html+=`<div class="leak-add"><input type="text" class="leak-label" id="leakLabelInput" placeholder="e.g. Social media"/><input type="number" class="leak-hours" id="leakHoursInput" placeholder="Hours" min="0" max="24" step="0.5"/><button class="btn" onclick="addTimeLeak()">Add</button></div>`;
   tl.innerHTML=html;
+  const totalTag=document.getElementById('timeLeaksTotalTag');
+  if(totalTag){
+    const total=Math.round(timeLeaks.reduce((s,l)=>s+l.hours,0)*10)/10;
+    totalTag.textContent = total>0 ? `${total}h logged` : '0h logged';
+  }
 }
 function addTimeLeak(){
   const labelEl=document.getElementById('leakLabelInput');
@@ -1447,7 +1457,7 @@ function isPastLoc(loc){ loc=normLoc(loc); return typeof loc==='number' && loc<t
 
 function countMustTasks(excludeLoc, excludeId){
   let n=0;
-  const scan=(arr,loc)=>arr.forEach(t=>{ if(loc===excludeLoc && t.id===excludeId) return; if(t.tier==='must') n++; });
+  const scan=(arr,loc)=>arr.forEach(t=>{ if(loc===excludeLoc && t.id===excludeId) return; if(t.tier==='must' && !t.done) n++; });
   weekTasks.forEach((day,i)=>scan(day,i));
   scan(nextWeekBucket,'nextweek');
   return n;
@@ -1570,15 +1580,23 @@ function moveForward(loc, id){
 }
 
 function setDeadline(loc, id, value){
+  loc=normLoc(loc);
   const task=getBucket(loc).find(t=>t.id===id);
   task.deadline = value || null;
   task._reminded=false;
   renderPlanner();
+  if(task.deadline){
+    showToast(`⏰ Deadline set for "${task.t}" — ${formatDeadline(task.deadline)}.`);
+    // Keep the picker open so the reminder-lead dropdown is still reachable after picking a date.
+    setTimeout(()=>toggleDeadlineInput(loc, id, true), 60);
+  }
 }
 function setReminderLead(loc, id, value){
+  loc=normLoc(loc);
   const task=getBucket(loc).find(t=>t.id===id);
   task.reminderLead = value==='' ? null : parseInt(value,10);
   task._reminded=false;
+  showToast(`Reminder set: ${value==='0'||value===''?'at the deadline':'before the deadline'}.`);
 }
 
 function toggleDeadlineInput(loc, id, forceOpen){
@@ -1645,7 +1663,7 @@ function taskBlockHtml(t, loc){
   const draggableNow = !locked || !t.done; // past-due incomplete tasks can still be dragged forward
   return `<div class="task-block ${locked?'locked':''}" style="background:${bg}; border-left-color:${border};" draggable="${draggableNow}" data-loc="${loc}" data-id="${t.id}">
     <div class="task-title" ${locked?'':'contenteditable="true"'} onblur="updateTaskTitle('${loc}','${t.id}',this)">${t.t}</div>
-    ${deadlineChip}${pastDueTag}${locked && !t.done ? '<div class="hint" style="margin-top:4px;">Drag onto today or a future day to un-mark past due</div>' : ''}
+    ${deadlineChip}${pastDueTag}
     <div class="meta">${tierSelect}${categorySelect}${energySelect}</div>
     <div class="meta">
       <button class="task-icon-btn mono" style="font-size:9.5px;" ${dis} onclick="editDuration('${loc}','${t.id}')" title="Edit duration">${t.est||0}m ✎</button>
@@ -1750,7 +1768,7 @@ function renderRealityBadge(){
   const r=realityRating(planned);
   badges.forEach(badge=>{
     badge.className='reality-badge reality-badge-live '+r.cls;
-    badge.textContent=`${r.icon} ${r.label} — ${planned.toFixed(1)}h / ${AVAILABLE_HOURS}h available`;
+    badge.textContent=`${r.icon} ${r.label} — ${planned.toFixed(1)}h / ${AVAILABLE_HOURS}h`;
   });
   const mustEl=document.getElementById('mustCountStat');
   if(mustEl){
@@ -1784,7 +1802,7 @@ function checkDeadlineReminders(){
     }
   });
 }
-setInterval(checkDeadlineReminders, 20000);
+setInterval(checkDeadlineReminders, 5000);
 
 // ---- Anti-procrastination game (in-page overlay, no popup) ----
 function getFocusTask(dayIdx){
