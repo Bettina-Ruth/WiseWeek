@@ -131,6 +131,31 @@ button{font-family:var(--font-body); cursor:pointer;}
 .footer-col a:hover{color:var(--sage-text);}
 .footer-bottom{max-width:1180px; margin:40px auto 0; padding-top:24px; border-top:1px solid var(--line); font-size:12.5px; color:var(--text-dim); display:flex; justify-content:space-between;}
 
+/* ---------- AUTH (Login / Sign up) ---------- */
+#auth{display:none; min-height:100vh;}
+#auth.active{display:flex;}
+.auth-shell{display:flex; width:100%; min-height:100vh; align-items:center; justify-content:center;}
+.auth-panel{display:flex; align-items:center; justify-content:center; padding:40px; position:relative; width:100%;}
+.auth-theme-btn{position:absolute; top:26px; right:26px;}
+.auth-form{width:100%; max-width:360px;}
+.auth-brand{display:flex; align-items:center; gap:10px; justify-content:center; margin-bottom:32px;}
+.auth-title{font-size:27px; margin-bottom:8px; text-align:center;}
+.auth-sub{font-size:14px; color:var(--text-dim); line-height:1.6; margin-bottom:26px; text-align:center;}
+.auth-label{display:block; font-size:12.5px; font-weight:500; margin:16px 0 6px;}
+.auth-input{width:100%; padding:11px 14px; border-radius:9px; border:1px solid var(--line); background:var(--surface); color:var(--text); font-size:14px; font-family:var(--font-body);}
+.auth-input:focus{outline:none; border-color:var(--sage);}
+.auth-submit{width:100%; margin-top:22px; padding:12px; font-size:14.5px;}
+.auth-submit:disabled{opacity:.7; cursor:default;}
+.auth-google-btn{width:100%; display:flex; align-items:center; justify-content:center; gap:10px; padding:11px; font-size:13.5px;}
+.auth-divider{display:flex; align-items:center; gap:14px; margin:22px 0 6px; color:var(--text-dim); font-size:12px;}
+.auth-divider::before,.auth-divider::after{content:''; flex:1; height:1px; background:var(--line);}
+.auth-switch{text-align:center; font-size:13px; color:var(--text-dim); margin-top:24px;}
+.auth-switch a{color:var(--sage-text); font-weight:500;}
+.auth-link-small{font-size:12.5px; color:var(--sage-text);}
+.auth-avatar-row{display:flex; align-items:flex-end; gap:14px;}
+.auth-avatar-preview{width:44px; height:44px; border-radius:50%; background:var(--sage); color:#152014; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:16px; font-weight:600; flex-shrink:0;}
+.auth-verify-icon{font-size:38px; margin-bottom:14px; text-align:center;}
+
 /* ---------- APP SHELL ---------- */
 #app{display:none; height:100vh; overflow:hidden;}
 #app.active{display:flex;}
@@ -488,8 +513,8 @@ button{font-family:var(--font-body); cursor:pointer;}
     </div>
     <div style="display:flex; gap:10px; align-items:center;">
       <button class="icon-btn theme-icon-btn" onclick="toggleTheme()" title="Toggle theme">☀</button>
-      <button class="btn" onclick="goApp('login')">Log in</button>
-      <button class="btn btn-primary" onclick="goApp('dashboard')">Start planning</button>
+      <button class="btn" onclick="goAuth('login')">Log in</button>
+      <button class="btn btn-primary" onclick="goAuth('signup')">Start planning</button>
     </div>
   </nav>
 
@@ -498,7 +523,7 @@ button{font-family:var(--font-body); cursor:pointer;}
     <h1>Plan a week you can <em>actually</em> live up to.</h1>
     <p>WiseWeek doesn't just organize your tasks — it tells you when your week is impossible before you live through it.</p>
     <div class="hero-cta">
-      <button class="btn btn-primary" onclick="goApp('dashboard')">Start planning free</button>
+      <button class="btn btn-primary" onclick="goAuth('signup')">Start planning free</button>
       <button class="btn" onclick="goApp('dashboard')">See a live week ↗</button>
     </div>
 
@@ -542,19 +567,19 @@ button{font-family:var(--font-body); cursor:pointer;}
         <h3>Free</h3>
         <div class="amount">$0<span>/mo</span></div>
         <ul><li>Weekly planner</li><li>Today's Focus</li><li>Basic analytics</li><li>1 reflection / week</li></ul>
-        <button class="btn" onclick="goApp('dashboard')">Get started</button>
+        <button class="btn" onclick="goAuth('signup')">Get started</button>
       </div>
       <div class="price-card featured">
         <h3>Plus</h3>
         <div class="amount">$9<span>/mo</span></div>
         <ul><li>Everything in Free</li><li>AI Weekly Reflection</li><li>Time Leak Detector</li><li>Unlimited history</li><li>Future Me messages</li></ul>
-        <button class="btn btn-primary" onclick="goApp('dashboard')">Start free trial</button>
+        <button class="btn btn-primary" onclick="goAuth('signup')">Start free trial</button>
       </div>
       <div class="price-card">
         <h3>Teams</h3>
         <div class="amount">$19<span>/user/mo</span></div>
         <ul><li>Everything in Plus</li><li>Shared weekly reviews</li><li>Admin controls</li><li>Priority support</li></ul>
-        <button class="btn" onclick="goApp('dashboard')">Talk to us</button>
+        <button class="btn" onclick="goAuth('signup')">Talk to us</button>
       </div>
     </div>
   </section>
@@ -579,6 +604,82 @@ button{font-family:var(--font-body); cursor:pointer;}
     </div>
     <div class="footer-bottom"><span>© 2026 WiseWeek. All rights reserved.</span><span>Made for people who plan weekly.</span></div>
   </footer>
+</div>
+
+<!-- ============ AUTH (Login / Sign up) ============ -->
+<div id="auth">
+  <div class="auth-shell">
+    <div class="auth-panel">
+      <button class="icon-btn theme-icon-btn auth-theme-btn" onclick="toggleTheme()" title="Toggle theme">☀</button>
+
+      <!-- LOGIN -->
+      <div class="auth-form" id="authLogin">
+        <div class="brand auth-brand" style="cursor:pointer;" onclick="goLanding()"><span class="mark"></span>WiseWeek</div>
+        <h2 class="auth-title">Welcome back</h2>
+        <p class="auth-sub">Log in to see how your week is actually shaping up.</p>
+        <button class="btn auth-google-btn" onclick="simulateGoogleAuth()">
+          <svg width="17" height="17" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 01-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.96v2.33A9 9 0 009 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 013.68 9c0-.59.1-1.17.27-1.7V4.97H.96A9 9 0 000 9c0 1.45.35 2.83.96 4.03l2.99-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.51.46 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 00.96 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
+          Continue with Google
+        </button>
+        <div class="auth-divider"><span>or</span></div>
+        <label class="auth-label" style="margin-top:0;">Email</label>
+        <input type="email" class="auth-input" id="loginEmail" placeholder="you@example.com" onkeydown="if(event.key==='Enter') submitLogin()" />
+        <label class="auth-label">Password</label>
+        <input type="password" class="auth-input" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter') submitLogin()" />
+        <div style="text-align:right; margin:10px 0 4px;"><a href="#" class="auth-link-small" onclick="showAuthPanel('forgot'); return false;">Forgot password?</a></div>
+        <button class="btn btn-primary auth-submit" onclick="submitLogin()" id="loginSubmitBtn">Log in</button>
+        <p class="auth-switch">Don't have an account? <a href="#" onclick="showAuthPanel('signup'); return false;">Sign up</a></p>
+      </div>
+
+      <!-- SIGN UP -->
+      <div class="auth-form" id="authSignup" style="display:none;">
+        <div class="brand auth-brand" style="cursor:pointer;" onclick="goLanding()"><span class="mark"></span>WiseWeek</div>
+        <h2 class="auth-title">Create your account</h2>
+        <p class="auth-sub">Start planning weeks you can actually live up to.</p>
+        <button class="btn auth-google-btn" onclick="simulateGoogleAuth()">
+          <svg width="17" height="17" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 01-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.96v2.33A9 9 0 009 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 013.68 9c0-.59.1-1.17.27-1.7V4.97H.96A9 9 0 000 9c0 1.45.35 2.83.96 4.03l2.99-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.51.46 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 00.96 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
+          Continue with Google
+        </button>
+        <div class="auth-divider"><span>or</span></div>
+        <div class="auth-avatar-row">
+          <div class="auth-avatar-preview" id="signupAvatarPreview">?</div>
+          <div style="flex:1;">
+            <label class="auth-label" style="margin-top:0;">Name</label>
+            <input type="text" class="auth-input" id="signupName" placeholder="Your name" oninput="updateSignupAvatar()" />
+          </div>
+        </div>
+        <label class="auth-label">Email</label>
+        <input type="email" class="auth-input" id="signupEmail" placeholder="you@example.com" />
+        <label class="auth-label">Password</label>
+        <input type="password" class="auth-input" id="signupPassword" placeholder="Create a password" onkeydown="if(event.key==='Enter') submitSignup()" />
+        <button class="btn btn-primary auth-submit" onclick="submitSignup()" id="signupSubmitBtn">Create account</button>
+        <p class="auth-switch">Already have an account? <a href="#" onclick="showAuthPanel('login'); return false;">Log in</a></p>
+      </div>
+
+      <!-- FORGOT PASSWORD -->
+      <div class="auth-form" id="authForgot" style="display:none;">
+        <div class="brand auth-brand" style="cursor:pointer;" onclick="goLanding()"><span class="mark"></span>WiseWeek</div>
+        <h2 class="auth-title">Reset your password</h2>
+        <p class="auth-sub">Enter your email and we'll send you a reset link.</p>
+        <div id="forgotFormState">
+          <label class="auth-label" style="margin-top:0;">Email</label>
+          <input type="email" class="auth-input" id="forgotEmail" placeholder="you@example.com" onkeydown="if(event.key==='Enter') submitForgot()" />
+          <button class="btn btn-primary auth-submit" onclick="submitForgot()">Send reset link</button>
+        </div>
+        <p class="auth-switch">Remembered it? <a href="#" onclick="showAuthPanel('login'); return false;">Back to log in</a></p>
+      </div>
+
+      <!-- VERIFY EMAIL (post sign-up) -->
+      <div class="auth-form" id="authVerify" style="display:none;">
+        <div class="brand auth-brand" style="cursor:pointer;" onclick="goLanding()"><span class="mark"></span>WiseWeek</div>
+        <div class="auth-verify-icon">✉️</div>
+        <h2 class="auth-title" style="font-size:22px;">Check your email</h2>
+        <p class="auth-sub">We've sent a verification link to <strong id="verifyEmailTarget" style="color:var(--text);">you@example.com</strong>. Confirm it to finish setting up your account.</p>
+        <button class="btn btn-primary auth-submit" onclick="goApp('dashboard')">Continue to WiseWeek</button>
+        <p class="auth-switch"><a href="#" onclick="resendVerification(); return false;">Resend email</a></p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ============ APP SHELL ============ -->
@@ -969,12 +1070,64 @@ faqs.forEach((f,i)=>{
 // ---- Navigation ----
 function goApp(page){
   document.getElementById('landing').classList.remove('active');
+  const authEl=document.getElementById('auth');
+  if(authEl) authEl.classList.remove('active');
   document.getElementById('app').classList.add('active');
   showPage(page);
 }
 function goLanding(){
   document.getElementById('app').classList.remove('active');
+  const authEl=document.getElementById('auth');
+  if(authEl) authEl.classList.remove('active');
   document.getElementById('landing').classList.add('active');
+}
+const authPanelIds={login:'authLogin', signup:'authSignup', forgot:'authForgot', verify:'authVerify'};
+function showAuthPanel(which){
+  Object.values(authPanelIds).forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
+  const target=document.getElementById(authPanelIds[which]);
+  if(target) target.style.display='block';
+}
+function goAuth(mode){
+  document.getElementById('landing').classList.remove('active');
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('auth').classList.add('active');
+  showAuthPanel(mode || 'login');
+}
+function updateSignupAvatar(){
+  const name=document.getElementById('signupName').value.trim();
+  const initials = name ? name.split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase() : '?';
+  document.getElementById('signupAvatarPreview').textContent=initials;
+}
+function submitLogin(){
+  const btn=document.getElementById('loginSubmitBtn');
+  const email=document.getElementById('loginEmail').value.trim();
+  if(!email){ showToast('Enter your email to continue.'); return; }
+  btn.textContent='Logging in…'; btn.disabled=true;
+  setTimeout(()=>{ btn.textContent='Log in'; btn.disabled=false; goApp('dashboard'); }, 500);
+}
+function submitSignup(){
+  const btn=document.getElementById('signupSubmitBtn');
+  const name=document.getElementById('signupName').value.trim();
+  const email=document.getElementById('signupEmail').value.trim();
+  if(!name || !email){ showToast('Add your name and email to continue.'); return; }
+  btn.textContent='Creating account…'; btn.disabled=true;
+  setTimeout(()=>{
+    btn.textContent='Create account'; btn.disabled=false;
+    document.getElementById('verifyEmailTarget').textContent=email;
+    showAuthPanel('verify');
+  }, 500);
+}
+function submitForgot(){
+  const email=document.getElementById('forgotEmail').value.trim();
+  if(!email){ showToast('Enter your email first.'); return; }
+  document.getElementById('forgotFormState').innerHTML = `<div class="day-tasks-empty">If an account exists for <strong style="color:var(--text);">${email}</strong>, a reset link is on its way.</div>`;
+}
+function resendVerification(){
+  showToast('Verification email resent.');
+}
+function simulateGoogleAuth(){
+  showToast('Google sign-in is simulated in this prototype.');
+  setTimeout(()=>goApp('dashboard'), 700);
 }
 function weekNumber(d){
   const onejan=new Date(d.getFullYear(),0,1);
