@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #111213;
+  --ink-raised: #1a1b1d;
+  --ink-raised-2: #212325;
+  --paper: #f7f5f1;
+  --paper-raised: #ffffff;
+  --paper-raised-2: #efebe4;
+  --graphite: #8a8f98;
+  --line-dark: #26282b;
+  --line-light: #e6e2d9;
+
+  /* Primary accent — soft eucalyptus/sage */
+  --sage: #a8c3a0; /* solid fills, borders, focus rings */
+  --sage-soft: #e8f0e5; /* light wash backgrounds */
+  --sage-hover: #94b58b; /* hover state */
+  --sage-text: #527040; /* dark accent — used wherever sage appears as TEXT */
+
+  --warn: #c9a455;
+  --warn-soft: rgba(201, 164, 85, 0.15);
+  --indigo: #7480a3;
+  --indigo-soft: rgba(116, 128, 163, 0.15);
+  --clay: #b5654a;
+  --clay-soft: rgba(181, 101, 74, 0.15);
+
+  /* Task priority / energy — soft pastel red -> yellow -> green spectrum */
+  --pri-must-bg: #f4c7c3;
+  --pri-must-border: #de9a94;
+  --pri-should-bg: #f5deaa;
+  --pri-should-border: #ddbd6e;
+  --pri-nice-bg: #cfe3c9;
+  --pri-nice-border: #9fc494;
+  --pri-text: #252522; /* always-dark text on pastel priority/energy surfaces */
+
+  /* Neutral dropdown / select / menu tokens — never colored text */
+  --menu-bg: #faf9f5;
+  --menu-text: #252522;
+  --menu-text-dim: #6b6b63;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+[data-theme="dark"] {
+  --bg: var(--ink);
+  --surface: var(--ink-raised);
+  --surface-2: var(--ink-raised-2);
+  --text: #efede7;
+  --text-dim: var(--graphite);
+  --line: var(--line-dark);
+
+  /* Dropdowns stay light/off-white even in dark mode for consistent readability */
+  --menu-bg: #faf9f5;
+  --menu-text: #252522;
+  --menu-text-dim: #6b6b63;
+
+  /* Task priority/energy colors go vivid "neon" in dark mode so they pop against the near-black surface */
+  --pri-must-bg: #ff7a6e;
+  --pri-must-border: #e5493b;
+  --pri-should-bg: #ffd24d;
+  --pri-should-border: #e6ad1a;
+  --pri-nice-bg: #5ef0a5;
+  --pri-nice-border: #22c97e;
+}
+
+[data-theme="light"] {
+  --bg: var(--paper);
+  --surface: var(--paper-raised);
+  --surface-2: var(--paper-raised-2);
+  --text: #232420;
+  --text-dim: #6b6f76;
+  --line: var(--line-light);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--sage-soft);
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hint {
+  font-size: 11.5px;
+  color: var(--text-dim);
+}
